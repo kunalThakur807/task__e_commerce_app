@@ -1,0 +1,40 @@
+name: Flutter CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - main  # Runs workflow on pushes to the main branch
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: 'stable'  # Use latest stable version
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Build APK
+        run: flutter build apk --release
+
+      - name: Build Web
+        run: flutter build web --release
+
+      - name: Deploy to GitHub Pages
+        if: success()
+        run: |
+          git config --global user.email "your-email@example.com"
+          git config --global user.name "your-username"
+          git checkout --orphan gh-pages
+          git rm -rf .
+          cp -r build/web/* .
+          git add .
+          git commit -m "Deploy web version"
+          git push origin gh-pages --force
