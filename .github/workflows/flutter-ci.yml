@@ -16,7 +16,7 @@ jobs:
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.27.3'  # Specify Flutter version explicitly
+          flutter-version: '3.27.3'
           channel: 'stable'
 
       - name: Install dependencies
@@ -32,19 +32,13 @@ jobs:
         run: flutter build web --release
 
       - name: Upload APK as Artifact
-        uses: actions/upload-artifact@v4  # ✅ Updated to v4
+        uses: actions/upload-artifact@v4
         with:
           name: Flutter-APK
           path: build/app/outputs/flutter-apk/app-release.apk
 
       - name: Deploy to GitHub Pages
-        if: success()
-        run: |
-          git config --global user.email "your-email@example.com"
-          git config --global user.name "your-username"
-          git checkout --orphan gh-pages
-          git rm -rf .
-          cp -r build/web/* .
-          git add .
-          git commit -m "Deploy web version"
-          git push origin gh-pages --force
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./build/web
