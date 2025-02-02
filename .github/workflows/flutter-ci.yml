@@ -28,18 +28,8 @@ jobs:
       - name: Build APK
         run: flutter build apk --release
 
-      - name: Build Web
-        run: flutter build web --release
-
       - name: Upload APK as Artifact
         uses: actions/upload-artifact@v4
         with:
           name: Flutter-APK
           path: build/app/outputs/flutter-apk/app-release.apk
-
-      - name: Deploy to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v4
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./build/web
-          publish_branch: gh-pages
